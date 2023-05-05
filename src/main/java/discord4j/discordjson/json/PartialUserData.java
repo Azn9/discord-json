@@ -20,8 +20,12 @@ public interface PartialUserData {
 
     Id id();
 
+    @JsonProperty("global_name")
+    Possible<String> globalName();
+
     Possible<String> username();
 
+    @Deprecated
     Possible<String> discriminator();
 
     Possible<Optional<String>> avatar();
