@@ -28,4 +28,9 @@ public interface MessageReactionAdd extends Dispatch {
     Possible<Id> guildId();
     Possible<MemberData> member();
     EmojiData emoji();
+
+    @JsonProperty("burst_colors")
+    Possible<String[]> burstColors();
+
+    boolean burst();
 }

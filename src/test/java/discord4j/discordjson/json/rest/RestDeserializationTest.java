@@ -91,6 +91,8 @@ public class RestDeserializationTest {
                         .count(1)
                         .me(false)
                         .emoji(EmojiData.builder().id("1").build())
+                        .countDetails(ReactionCountDetailsData.builder().normal(1).burst(0).build())
+                        .burstColors()
                         .build())
                 .build();
         MessageData withThreeReactions = MessageData.builder().from(withReaction)
@@ -99,11 +101,15 @@ public class RestDeserializationTest {
                                 .count(1)
                                 .me(false)
                                 .emoji(EmojiData.builder().id("2").build())
+                                .countDetails(ReactionCountDetailsData.builder().normal(1).burst(0).build())
+                                .burstColors()
                                 .build(),
                         ReactionData.builder()
                                 .count(1)
                                 .me(false)
                                 .emoji(EmojiData.builder().id("3").build())
+                                .countDetails(ReactionCountDetailsData.builder().normal(1).burst(0).build())
+                                .burstColors()
                                 .build()
                 ))
                 .build();
@@ -117,11 +123,15 @@ public class RestDeserializationTest {
                                 .count(1)
                                 .me(false)
                                 .emoji(EmojiData.builder().id("2").build())
+                                .countDetails(ReactionCountDetailsData.builder().normal(1).burst(0).build())
+                                .burstColors()
                                 .build(),
                         ReactionData.builder()
                                 .count(1)
                                 .me(false)
                                 .emoji(EmojiData.builder().id("3").build())
+                                .countDetails(ReactionCountDetailsData.builder().normal(1).burst(0).build())
+                                .burstColors()
                                 .build()
                 ))
                 .build();
