@@ -19,11 +19,18 @@ public interface GuildMemberModifyRequest {
     }
 
     Possible<Optional<String>> nick();
+
     Possible<List<String>> roles();
+
     Possible<Boolean> mute();
+
     Possible<Boolean> deaf();
+
     @JsonProperty("channel_id")
     Possible<Optional<String>> channelId();
+
     @JsonProperty("communication_disabled_until")
     Possible<Optional<String>> communicationDisabledUntil();
+
+    Possible<Optional<Integer>> flags();
 }

@@ -12,5 +12,6 @@
   "joined_at": "2017-08-14T23:14:32.133000+00:00",
   "is_pending": false,
   "mute": false,
-  "deaf": false
+  "deaf": false,
+  "flags": 0
 }
