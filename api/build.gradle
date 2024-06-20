@@ -53,7 +53,18 @@ publishing {
         }
     }
 
-    if (!isJitpack) {
+    if (isPr) {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Discord4J/discord-json")
+                credentials {
+                    username = System.getenv("GRP_USER")
+                    password = System.getenv("GRP_TOKEN")
+                }
+            }
+        }
+    } else if (!isJitpack) {
         repositories {
             maven {
                 if (isRelease) {

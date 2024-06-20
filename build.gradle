@@ -24,6 +24,17 @@ ext {
 
     isJitpack = "true" == System.getenv("JITPACK")
     isRelease = !version.toString().endsWith('-SNAPSHOT')
+    isPr = "true" == System.getenv("IS_PULL_REQUEST")
+}
+
+if (isPr) {
+    /*
+        GITHUB_REF_NAME
+        The short ref name of the branch or tag that triggered the workflow run.
+        For pull requests, the format is <pr_number>/merge.
+     */
+    var prNumber = System.getenv("GITHUB_REF_NAME").replace("/merge", "")
+    version = "pr-$prNumber-SNAPSHOT"
 }
 
 allprojects {
@@ -68,8 +79,8 @@ allprojects {
             addStringOption 'encoding', 'UTF-8'
             // adding links to javadocs for filling specific classes when not existing inside current javadoc
             links = [
-                    jdk_javadoc,
-                    "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/2.12.7/"
+                jdk_javadoc,
+                "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/2.12.7/"
             ]
         }
         if (JavaVersion.current().isJava9Compatible()) {
@@ -160,7 +171,18 @@ publishing {
         }
     }
 
-    if (!isJitpack) {
+    if (isPr) {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Discord4J/discord-json")
+                credentials {
+                    username = System.getenv("GRP_USER")
+                    password = System.getenv("GRP_TOKEN")
+                }
+            }
+        }
+    } else if (!isJitpack) {
         repositories {
             maven {
                 if (isRelease) {
@@ -184,8 +206,8 @@ publishing {
 jar {
     manifest {
         attributes 'Implementation-Title': 'discord-json',
-                'Implementation-Version': archiveVersion,
-                'Automatic-Module-Name': 'discord4j.discordjson'
+            'Implementation-Version': archiveVersion,
+            'Automatic-Module-Name': 'discord4j.discordjson'
     }
 }
 

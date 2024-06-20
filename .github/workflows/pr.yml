@@ -1,18 +1,14 @@
-name: Java CI
+name: Pull requests
 
 on:
-  push:
-    branches:
-      - 'master'
-      - '1.5.x'
-      - '1.6.x'
-    tags-ignore:
-      - '*.*'
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
     name: Build for JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository }}
     strategy:
       matrix:
         java: [ 11 ]
@@ -31,18 +27,19 @@ jobs:
           distribution: 'corretto'
       - name: Build with Gradle
         run: ./gradlew build
-  release:
+  publish:
     name: Publish artifacts
     runs-on: ubuntu-latest
     needs: build
     env:
-      HAVE_NEEDED_DATA: ${{ secrets.signingKey != '' && secrets.signingPassword != '' && secrets.sonatypeUsername != '' && secrets.sonatypePassword != '' }}
+      IS_PULL_REQUEST: "true"
+      HAVE_NEEDED_DATA: ${{ secrets.gpr_user != '' && secrets.gpr_token != '' }}
     steps:
       - name: Validate publish secrets
         if: ${{ env.HAVE_NEEDED_DATA != 'true' }}
         run: |
-            echo "The secrets for publish are not set."
-            exit 0
+          echo "The secrets for publish are not set."
+          exit 0
       - uses: actions/checkout@v4
         if: ${{ env.HAVE_NEEDED_DATA == 'true' }}
       - uses: actions/cache@v4
@@ -60,9 +57,7 @@ jobs:
           distribution: 'corretto'
       - name: Publish with Gradle
         if: ${{ env.HAVE_NEEDED_DATA == 'true' }}
-        run: ./gradlew -x test publish
+        run: ./gradlew -x test publishAllPublicationsToGitHubPackagesRepository
         env:
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.signingKey }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.signingPassword }}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.sonatypeUsername }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.sonatypePassword }}
+          GRP_USER: ${{ secrets.gpr_user }}
+          GRP_TOKEN: ${{ secrets.gpr_token }}
